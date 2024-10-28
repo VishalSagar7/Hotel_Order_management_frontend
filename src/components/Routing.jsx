@@ -7,6 +7,7 @@ import HotelLoginPage from './HotelLoginPage';
 import TestForm from '../TashForm';
 import AdminDashboard from './AdminPages/AdminDashboard';
 import RoomDashboard from './UserPages/RoomDashboard'
+import Cart from './UserPages/Cart';
 
 const Routing = () => {
 
@@ -30,6 +31,10 @@ const Routing = () => {
         {
             path: '/room-dashboard',
             element : <RoomDashboard/>
+        },
+        {
+            path: '/cart',
+            element : <Cart/>
         },
         {
             path: '/room-login',

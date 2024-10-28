@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import { useFormik } from 'formik';
 import RoomLoginSchema from '../../YupValidations/RoomLoginSchema';
@@ -8,6 +8,7 @@ import { backendAddress } from '../../helper';
 const RoomLoginForm = () => {
 
     const navigate = useNavigate();
+    const [loadingButton, setLoadingButton] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -16,7 +17,9 @@ const RoomLoginForm = () => {
         },
         validationSchema: RoomLoginSchema, // Apply the validation schema
         onSubmit: async (values) => {
-            console.log('Room Login Form submitted:', values);
+            // console.log('Room Login Form submitted:', values);
+
+            setLoadingButton(true);
  
             const postRoomLoginDetails = async() => {
                 try {
@@ -43,6 +46,7 @@ const RoomLoginForm = () => {
                     // navigate to room dashboard ater successfull login
                     navigate('/room-dashboard');
 
+                    setLoadingButton(false);
 
                     // Optionally redirect or update the UI
                 } catch (error) {
@@ -98,8 +102,9 @@ const RoomLoginForm = () => {
                         bgcolor: '#FF5A25',
                     },
                 }}
+                disabled = {loadingButton}
             >
-                Login
+                { loadingButton ? 'Loading..' : 'Login' }
             </Button>
         </form>
     );

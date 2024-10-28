@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { backendAddress } from '../../helper';
 import FoodItemCard from './FoodItemCard';
+import { useSelector } from 'react-redux';
 
 const FoodContainer = ({ selectedCategory }) => {
 
     const [foods, setFoods] = useState([]); 
+    const cart = useSelector((store) => store.cart);
+    // console.log(cart);
+    
+
 
     const getFoodData = async () => {
         try {
@@ -38,11 +43,7 @@ const FoodContainer = ({ selectedCategory }) => {
                     filteredFoods.map((food) => (
                         <FoodItemCard
                             key={food._id}
-                            name={food.name}
-                            category={food.category}
-                            price={food.price}
-                            description={food.description}
-                            imageUrl={food.imageUrl}
+                            data = {food}
                         />
                     ))
                 ) : (
