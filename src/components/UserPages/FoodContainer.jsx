@@ -3,13 +3,9 @@ import { backendAddress } from '../../helper';
 import FoodItemCard from './FoodItemCard';
 import { useSelector } from 'react-redux';
 
-const FoodContainer = ({ selectedCategory }) => {
-
-    const [foods, setFoods] = useState([]); 
+const FoodContainer = ({ selectedCategory, showVeg, showNonVeg }) => {
+    const [foods, setFoods] = useState([]);
     const cart = useSelector((store) => store.cart);
-    // console.log(cart);
-    
-
 
     const getFoodData = async () => {
         try {
@@ -21,7 +17,6 @@ const FoodContainer = ({ selectedCategory }) => {
 
             const data = await response.json();
             setFoods(data); // Set the data in state
-            // console.log(data);
         } catch (error) {
             console.log("Error fetching food data:", error);
         }
@@ -31,19 +26,23 @@ const FoodContainer = ({ selectedCategory }) => {
         getFoodData();
     }, []);
 
-    // Filter food items based on selected category
-    const filteredFoods = selectedCategory
-        ? foods.filter(food => food.category === selectedCategory)
-        : foods; // If no category is selected, show all foods
+    // Filter food items based on selected category and veg/non-veg filters
+    const filteredFoods = foods
+        .filter(food => (selectedCategory ? food.category === selectedCategory : true)) // Category filter
+        .filter(food => {
+            if (showVeg && !showNonVeg) return food.veg === true; // Only veg items
+            if (showNonVeg && !showVeg) return food.veg === false; // Only non-veg items
+            return true; // Show all items if both or neither are selected
+        });
 
     return (
         <div className='min-h-[100vh] w-full'>
-            <div className=' flex justify-center flex-wrap gap-[15px]'>
+            <div className='flex justify-center flex-wrap gap-[15px]'>
                 {filteredFoods.length > 0 ? (
                     filteredFoods.map((food) => (
                         <FoodItemCard
                             key={food._id}
-                            data = {food}
+                            data={food}
                         />
                     ))
                 ) : (

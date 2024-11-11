@@ -6,6 +6,9 @@ import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import { useSelector } from 'react-redux';
 import { store } from '../../store/store';
 import { useNavigate } from 'react-router-dom';
+import { Switch, FormControlLabel, FormGroup } from '@mui/material';
+import { Typography } from '@mui/material';
+import CartNotification from './CartNotification';
 
 const RoomDashboard = () => {
   
@@ -14,12 +17,24 @@ const RoomDashboard = () => {
   const navigate = useNavigate();
 
   const [selectedCategory, setSelectedCategory] = useState('Thali'); // Default category
+  const [showVeg, setShowVeg] = useState(false);
+  const [showNonVeg, setShowNonVeg] = useState(false);
 
   const roomInfo = useSelector((store) => store.roomInfo);
   const cart = useSelector((store) => store.cart);
 
   
   const totalItemsInCart = cart.length;
+
+  const handleVegSwitchChange = (event) => {
+    setShowVeg(event.target.checked);
+    setShowNonVeg(false);
+  };
+
+  const handleNonVegSwitchChange = (event) => {
+    setShowNonVeg(event.target.checked);
+    setShowVeg(false); 
+  };
   
   
   
@@ -40,6 +55,8 @@ const RoomDashboard = () => {
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
+
+  const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
   return (
     <div className='min-h-[100vh] bg-gray-200 flex'>
@@ -63,7 +80,41 @@ const RoomDashboard = () => {
       <div className='flex-1 p-8 pt-[0px] ml-[240px]'>
         <div className=' h-[80px] w-full  flex items-center justify-between px-[20px] '>
 
-          <div className='h-[60px] w-full  bg-sky-300'>
+          <div className='h-[60px] w-full  flex items-center px-[40px]'>
+
+            <FormGroup row>
+              <FormControlLabel
+                control={
+                  <Switch
+                    sx={{
+                      transform: 'scale(0.8)', // Adjust the scale to make the switch smaller or larger
+                    }}
+                    checked={showVeg}
+                    onChange={handleVegSwitchChange}
+                    color="success"
+                  />
+                }
+                label={
+                  <Typography sx={{ fontSize: '15px' }}>Veg</Typography> // Adjust label font size
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    sx={{
+                      transform: 'scale(0.8)', // Same scaling for consistency
+                    }}
+                    checked={showNonVeg}
+                    onChange={handleNonVegSwitchChange}
+                    color="warning"
+                  />
+                }
+                label={
+                  <Typography sx={{ fontSize: '15px' }}>Non veg</Typography> // Adjust label font size
+                }
+              />
+            </FormGroup>
+
 
           </div>
 
@@ -90,28 +141,11 @@ const RoomDashboard = () => {
           </div>
 
         </div>
-        <FoodContainer selectedCategory={selectedCategory} /> {/* Pass the selected category to FoodContainer */}
+        <FoodContainer selectedCategory={selectedCategory} showVeg={showVeg} showNonVeg={showNonVeg} /> {/* Pass the selected category to FoodContainer */}
 
 
-        <div
-          className={`fixed flex items-center justify-between px-[20px] bottom-0 left-[60%] transform rounded translate-x-[-50%] h-[40px] w-[650px] bg-[#EC2D01] 
-          ${totalItemsInCart > 0 ? 'block' : 'hidden'}`}
-        >
-          <p className='text-white font-semibold'>{totalItemsInCart} item added</p>
-
-          <button
-            onClick={() => { navigate('/cart') }}
-            className='text-white'>
-            View cart
-            <ShoppingCartRoundedIcon
-              sx={{
-                fontSize: '20px',
-                marginLeft : '20px'
-              }}
-            />
-          </button>
-        </div>
-
+        <CartNotification totalItemsInCart={totalItemsInCart}/>
+       
       </div>
     </div>
   );
